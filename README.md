@@ -1,87 +1,115 @@
-# Welcome to React Router!
+# RF Analyzer Web Interface
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Веб-приложение для работы с HackRF One и анализа записанных файлов. Позволяет определять диапазон сигнала, тип, наличие шифрования, выполнять распознавание речи и преобразование в текст, обработку видео, анализ телеметрии.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## Возможности
 
-## Features
+- 📡 Работа с HackRF One через веб-интерфейс
+- 📊 Визуализация сигналов в реальном времени
+- 🔍 Анализ записанных файлов
+- 🗣️ Распознавание речи и преобразование в текст
+- 🎥 Обработка видео
+- 📈 Анализ телеметрии
+- 💾 Библиотека файлов с комментариями
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## Технологии
 
-## Getting Started
+### Frontend
+- React + Vite
+- TypeScript
+- Material UI
+- React Router
+- Chart.js для визуализации
 
-### Installation
+### Backend
+- Python + Flask
+- SQLite для хранения данных
+- SQLAlchemy ORM
+- Flask-SocketIO для real-time коммуникации
 
-Install the dependencies:
+## Установка
 
+### Требования
+- Python 3.8+
+- Node.js 16+
+- HackRF One
+
+### Backend
+
+1. Создайте виртуальное окружение и активируйте его:
 ```bash
+python -m venv backend-venv
+# Windows
+.\backend-venv\Scripts\activate
+# Linux/MacOS
+source backend-venv/bin/activate
+```
+
+2. Установите зависимости:
+```bash
+cd backend
+pip install -r requirements.txt
+```
+
+### Frontend
+
+1. Установите зависимости:
+```bash
+cd frontend
 npm install
 ```
 
-### Development
+## Запуск
 
-Start the development server with HMR:
+### Режим разработки
 
+1. Запустите backend:
 ```bash
+# В директории backend
+flask run --debug
+```
+
+2. Запустите frontend:
+```bash
+# В директории frontend
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+Приложение будет доступно по адресу http://localhost:5173
 
-## Building for Production
+### Продакшн
 
-Create a production build:
-
+1. Соберите frontend:
 ```bash
+cd frontend
 npm run build
 ```
 
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
+2. Запустите backend:
 ```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+# В директории backend
+flask run
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
+## Структура проекта
 
 ```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+.
+├── backend/
+│   ├── app.py
+│   ├── routes/
+│   ├── models/
+│   ├── utils/
+│   └── requirements.txt
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   └── app.tsx
+│   ├── public/
+│   └── package.json
+└── README.md
 ```
 
-## Styling
+## Лицензия
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+MIT
