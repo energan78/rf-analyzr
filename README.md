@@ -61,6 +61,30 @@ npm install
 
 ## Запуск
 
+### Быстрый старт
+
+#### Windows PowerShell
+
+Для удобства работы с проектом созданы скрипты запуска и остановки:
+
+1. Запуск всего проекта одной командой:
+```powershell
+.\start-project.ps1
+```
+Это запустит:
+- Backend сервер на Python/Flask (http://localhost:5000)
+- Frontend сервер на Vite/React (http://localhost:5173)
+
+2. Остановка всех серверов:
+```powershell
+.\stop-project.ps1
+```
+
+Примечание: При первом запуске убедитесь, что:
+- Установлены все зависимости backend (pip install -r requirements.txt)
+- Установлены все зависимости frontend (npm install)
+- Активировано виртуальное окружение Python (backend-venv)
+
 ### Режим разработки
 
 1. Запустите backend:
