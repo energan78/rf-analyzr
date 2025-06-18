@@ -1,47 +1,43 @@
-from flask import Blueprint, jsonify, request, send_file, Response
+from flask import Blueprint, jsonify, request, current_app
 import os
-from datetime import datetime
+from werkzeug.utils import secure_filename
 
-bp = Blueprint('files', __name__, url_prefix='/api/files')
+file_routes = Blueprint('file', __name__, url_prefix='/api/files')
 
-UPLOAD_FOLDER = 'uploads'
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+ALLOWED_EXTENSIONS = {'iq', 'raw', 'dat', 'wav'}
 
-@bp.route('/list', methods=['GET'])
-def list_files():
-    files = []
-    for filename in os.listdir(UPLOAD_FOLDER):
-        if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
-            files.append({
-                "name": filename,
-                "created": datetime.fromtimestamp(os.path.getctime(os.path.join(UPLOAD_FOLDER, filename))).isoformat(),
-                "size": os.path.getsize(os.path.join(UPLOAD_FOLDER, filename))
-            })
-    return jsonify({"files": files})
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@bp.route('/upload', methods=['POST'])
+@file_routes.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
-        return jsonify({"error": "No file provided"}), 400
+        return jsonify({'error': 'No file part'}), 400
+        
     file = request.files['file']
-    if not file or not file.filename:
-        return jsonify({"error": "No selected file"}), 400
-    filename = file.filename
-    if filename is None:
-        return jsonify({"error": "Invalid filename"}), 400
-    filepath = os.path.join(UPLOAD_FOLDER, filename)
-    file.save(filepath)
-    return jsonify({
-        "status": "success",
-        "filename": filename
-    })
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+        
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        upload_folder = os.path.join(current_app.root_path, 'uploads')
+        os.makedirs(upload_folder, exist_ok=True)
+        file.save(os.path.join(upload_folder, filename))
+        return jsonify({'filename': filename}), 200
+    
+    return jsonify({'error': 'File type not allowed'}), 400
 
-@bp.route('/<filename>', methods=['GET'])
-def download_file(filename):
-    if not filename:
-        return jsonify({"error": "Filename required"}), 400
-    filepath = os.path.join(UPLOAD_FOLDER, filename)
-    if not os.path.exists(filepath):
-        return jsonify({"error": "File not found"}), 404
-    return send_file(filepath, as_attachment=True)
+@file_routes.route('/list', methods=['GET'])
+def list_files():
+    upload_folder = os.path.join(current_app.root_path, 'uploads')
+    os.makedirs(upload_folder, exist_ok=True)
+    files = []
+    for filename in os.listdir(upload_folder):
+        if allowed_file(filename):
+            file_path = os.path.join(upload_folder, filename)
+            files.append({
+                'name': filename,
+                'size': os.path.getsize(file_path),
+                'modified': os.path.getmtime(file_path)
+            })
+    return jsonify({'files': files})

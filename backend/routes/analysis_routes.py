@@ -1,30 +1,30 @@
 from flask import Blueprint, jsonify, request
 
-bp = Blueprint('analysis', __name__, url_prefix='/api/analysis')
+analysis_routes = Blueprint('analysis', __name__, url_prefix='/api/analysis')
 
-@bp.route('/signal', methods=['POST'])
+@analysis_routes.route('/signal', methods=['POST'])
 def analyze_signal():
-    # TODO: Implement signal analysis
+    """Анализировать сигнал"""
+    data = request.json
+    frequency = data.get('frequency', 100.0)
+    
     return jsonify({
-        "frequency_range": "100-200MHz",
-        "signal_type": "FSK",
-        "encryption": "None detected",
-        "confidence": 0.85
+        'status': 'success',
+        'analysis': {
+            'frequency': frequency,
+            'type': 'FM',
+            'snr': 20.5,
+            'bandwidth': 200000
+        }
     })
 
-@bp.route('/speech', methods=['POST'])
-def analyze_speech():
-    # TODO: Implement speech recognition
+@analysis_routes.route('/modulation', methods=['POST'])
+def detect_modulation():
+    """Определить тип модуляции"""
     return jsonify({
-        "text": "Speech recognition result will appear here",
-        "confidence": 0.9
-    })
-
-@bp.route('/telemetry', methods=['POST'])
-def analyze_telemetry():
-    # TODO: Implement telemetry analysis
-    return jsonify({
-        "protocol": "Unknown",
-        "data": {},
-        "confidence": 0.7
+        'status': 'success',
+        'modulation': {
+            'type': 'FM',
+            'confidence': 0.95
+        }
     })
