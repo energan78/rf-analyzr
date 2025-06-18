@@ -11,6 +11,7 @@ import Alert from '@mui/material/Alert';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+import CircularProgress from '@mui/material/CircularProgress';
 import { Line } from 'react-chartjs-2';
 import { useSignals } from '../hooks/useSignals';
 import { SignalInfo } from '../types/signals';
@@ -138,35 +139,46 @@ const SignalCapture = () => {
                 <Line options={chartOptions} data={chartData} />
               </Box>
 
-              {!isCapturing && signals.length > 0 && (
+              {!isCapturing && (
                 <Card variant="outlined">
                   <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      Возможные сигналы на частоте {frequency} MHz
-                    </Typography>
-                    <List>
-                      {signals.map((signal: SignalInfo) => (
-                        <ListItem key={signal.name}>
-                          <ListItemText
-                            primary={signal.name}
-                            secondary={
-                              <>
-                                <Typography component="span" variant="body2" color="text.primary">
-                                  {signal.modulation} • {signal.signal_type}
-                                </Typography>
-                                <br />
-                                {signal.usage}
-                                {signal.encryption !== "Нет" && (
-                                  <Typography component="span" color="error" sx={{ ml: 1 }}>
-                                    • Зашифрован
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Typography variant="h6">
+                        Возможные сигналы на частоте {frequency} MHz
+                      </Typography>
+                      {loading && (
+                        <CircularProgress size={20} />
+                      )}
+                    </Stack>
+                    {signals.length > 0 ? (
+                      <List>
+                        {signals.map((signal: SignalInfo) => (
+                          <ListItem key={signal.name}>
+                            <ListItemText
+                              primary={signal.name}
+                              secondary={
+                                <>
+                                  <Typography component="span" variant="body2" color="text.primary">
+                                    {signal.modulation} • {signal.signal_type}
                                   </Typography>
-                                )}
-                              </>
-                            }
-                          />
-                        </ListItem>
-                      ))}
-                    </List>
+                                  <br />
+                                  {signal.usage}
+                                  {signal.encryption !== "Нет" && (
+                                    <Typography component="span" color="error" sx={{ ml: 1 }}>
+                                      • Зашифрован
+                                    </Typography>
+                                  )}
+                                </>
+                              }
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    ) : !loading && (
+                      <Typography color="text.secondary" sx={{ mt: 2 }}>
+                        Сигналы не найдены в этом диапазоне
+                      </Typography>
+                    )}
                   </CardContent>
                 </Card>
               )}
